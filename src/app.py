@@ -28,6 +28,11 @@ vectorizer = joblib.load(vectorizer_path)
 # Text Preprocessing Function
 # -----------------------------
 def preprocess_text(text):
+
+model = joblib.load("model.pkl")
+vectorizer = joblib.load("vectorizer.pkl")
+
+def wordopt(text):
     text = text.lower()
     text = re.sub(r'https?://\S+', '', text)
     text = re.sub(r'<.*?>', '', text)
@@ -88,3 +93,22 @@ if st.button("🔍 Predict"):
 st.divider()
 
 st.caption("Developed using Python, Scikit-learn, TF-IDF, and Streamlit")
+st.title("📰 Fake News Detection")
+
+news = st.text_area("Paste your news article")
+
+if st.button("Predict"):
+    news = wordopt(news)
+    vector = vectorizer.transform([news])
+
+    pred = model.predict(vector)[0]
+    prob = model.predict_proba(vector)[0]
+
+    confidence = max(prob) * 100
+
+    if pred == 1:
+        st.success("✅ True News")
+    else:
+        st.error("❌ Fake News")
+
+    st.write(f"Confidence: {confidence:.2f}%")
