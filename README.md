@@ -208,5 +208,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## ✉️ Contact & Acknowledgments
 
 * **Developer:** [Shreshtha Sharma](https://github.com/shreshthasharma110)
-* **Dataset Source:** [ISOT Fake News Dataset](https://www.uvic.ca/engineering/ece/isot/datasets/fake-news/index.php)
+* **Dataset Source: kaggle 
 * Special thanks to the open-source community for providing the tools and libraries that made this project possible.
