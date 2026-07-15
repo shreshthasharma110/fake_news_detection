@@ -3,6 +3,7 @@ import joblib
 import re
 import string
 import os
+<<<<<<< HEAD
 
 # -----------------------------
 # Page Configuration
@@ -28,11 +29,33 @@ vectorizer = joblib.load(vectorizer_path)
 # Text Preprocessing Function
 # -----------------------------
 def preprocess_text(text):
+=======
+>>>>>>> 8d3b6e4 (Reorganize project structure and improve Streamlit app)
 
-model = joblib.load("model.pkl")
-vectorizer = joblib.load("vectorizer.pkl")
+# -----------------------------
+# Page Configuration
+# -----------------------------
+st.set_page_config(
+    page_title="Fake News Detection",
+    page_icon="📰",
+    layout="centered"
+)
 
-def wordopt(text):
+# -----------------------------
+# Load Model and Vectorizer
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model_path = os.path.join(BASE_DIR, "..", "models", "model.pkl")
+vectorizer_path = os.path.join(BASE_DIR, "..", "models", "vectorizer.pkl")
+
+model = joblib.load(model_path)
+vectorizer = joblib.load(vectorizer_path)
+
+# -----------------------------
+# Text Preprocessing Function
+# -----------------------------
+def preprocess_text(text):
     text = text.lower()
     text = re.sub(r'https?://\S+', '', text)
     text = re.sub(r'<.*?>', '', text)
@@ -44,6 +67,7 @@ def wordopt(text):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
+<<<<<<< HEAD
 st.title("📰 Fake News Detection")
 
 st.write(
@@ -93,22 +117,54 @@ if st.button("🔍 Predict"):
 st.divider()
 
 st.caption("Developed using Python, Scikit-learn, TF-IDF, and Streamlit")
+=======
+>>>>>>> 8d3b6e4 (Reorganize project structure and improve Streamlit app)
 st.title("📰 Fake News Detection")
 
-news = st.text_area("Paste your news article")
+st.write(
+    """
+    This application uses a **Machine Learning model** with **TF-IDF Vectorization**
+    to classify a news article as **Fake** or **True**.
+    """
+)
 
-if st.button("Predict"):
-    news = wordopt(news)
-    vector = vectorizer.transform([news])
+news = st.text_area(
+    "Paste a News Article",
+    placeholder="Paste the complete news article here...",
+    height=250
+)
 
-    pred = model.predict(vector)[0]
-    prob = model.predict_proba(vector)[0]
+# -----------------------------
+# Prediction
+# -----------------------------
+if st.button("🔍 Predict"):
 
-    confidence = max(prob) * 100
-
-    if pred == 1:
-        st.success("✅ True News")
+    if news.strip() == "":
+        st.warning("⚠️ Please enter a news article.")
     else:
-        st.error("❌ Fake News")
 
-    st.write(f"Confidence: {confidence:.2f}%")
+        clean_news = preprocess_text(news)
+
+        with st.spinner("Analyzing article..."):
+
+            vector = vectorizer.transform([clean_news])
+
+            prediction = model.predict(vector)[0]
+            probability = model.predict_proba(vector)[0]
+
+            confidence = max(probability) * 100
+
+        st.divider()
+
+        if prediction == 1:
+            st.success("✅ This news is predicted to be **TRUE**.")
+        else:
+            st.error("❌ This news is predicted to be **FAKE**.")
+
+        st.metric("Confidence", f"{confidence:.2f}%")
+
+        st.progress(confidence / 100)
+
+st.divider()
+
+st.caption("Developed using Python, Scikit-learn, TF-IDF, and Streamlit")
